@@ -1,28 +1,34 @@
-if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
-
--- Customize Mason
-
----@type LazySpec
+-- Mason setup - fix for duplicate registry
 return {
-  -- use mason-tool-installer for automatically installing Mason packages
-  {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    -- overrides `require("mason-tool-installer").setup(...)`
-    opts = {
-      -- Make sure to use the names found in `:Mason`
-      ensure_installed = {
-        -- install language servers
-        "lua-language-server",
-
-        -- install formatters
-        "stylua",
-
-        -- install debuggers
-        "debugpy",
-
-        -- install any other package
-        "tree-sitter-cli",
-      },
-    },
+  "williamboman/mason.nvim",
+  dependencies = {
+    "williamboman/mason-lspconfig.nvim",
   },
+  config = function()
+    require("mason").setup({
+      -- Remove or comment out any registries configuration if present
+      -- registries = { ... }  -- DELETE THIS if you have it
+
+      ui = {
+        icons = {
+          package_installed = "✓",
+          package_pending = "➜",
+          package_uninstalled = "✗"
+        }
+      }
+    })
+
+    require("mason-lspconfig").setup({
+      ensure_installed = {
+        "lua_ls",   -- Lua
+        "bashls",   -- Bash
+        "dockerls", -- Docker
+        "jsonls",   -- JSON
+        -- "yamlls",   -- YAML
+        -- "vimls",    -- Vim
+        -- "gopls",         -- Uncomment after installing Go
+      },
+      automatic_installation = true,
+    })
+  end,
 }
